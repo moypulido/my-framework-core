@@ -1,0 +1,5 @@
+# Ignorar todos los módulos instalados
+modules/*
+
+# Pero mantener la carpeta
+!modules/.gitkeep
