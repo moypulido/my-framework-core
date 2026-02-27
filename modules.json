@@ -1,3 +1,4 @@
 {
-  "auth": "https://github.com/moypulido/my-framework-auth"
+  "auth": "https://github.com/moypulido/my-framework-auth",
+  "payments": "https://github.com/moypulido/my-framework-payment"
 }
