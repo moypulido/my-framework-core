@@ -9,36 +9,57 @@ fun runCommand(command: List<String>) {
         .waitFor()
 }
 
-fun main(args: Array<String>) {
-    if (args.size < 2 || args[0] != "install") {
-        println("Usage: install <module>")
-        return
-    }
-
-    val moduleName = args[1]
+fun getRepoUrl(moduleName: String): String? {
     val registryFile = File("modules.json")
-
-    if (!registryFile.exists()) {
-        println("modules.json not found")
-        return
-    }
+    if (!registryFile.exists()) return null
 
     val content = registryFile.readText()
-    val regex = """"$moduleName"\s*:\s*"([^"]+)"""".toRegex()
+    val regex = """$moduleName"\s*:\s*"([^"]+)""".toRegex()
     val match = regex.find(content)
 
-    if (match == null) {
-        println("Module not found in registry")
+    return match?.groupValues?.get(1)
+}
+
+
+fun main(args: Array<String>) {
+
+    if (args.size < 2) {
+        println("Usage:")
+        println(" install <module>")
+        println(" update <module>")
         return
     }
 
-    val repoUrl = match.groupValues[1]
+    val command = args[0]
+    val moduleName = args[1]
     val targetDir = File("modules/$moduleName")
 
-    if (targetDir.exists()) {
-        println("Module already installed")
-        return
-    }
+    when (command) {
 
-    runCommand(listOf("git", "clone", repoUrl, targetDir.path))
+        "install" -> {
+            val repoUrl = getRepoUrl(moduleName)
+            if (repoUrl == null) {
+                println("Module not found in registry")
+                return
+            }
+
+            if (targetDir.exists()) {
+                println("Module already installed")
+                return
+            }
+
+            runCommand(listOf("git", "clone", repoUrl, targetDir.path))
+        }
+
+        "update" -> {
+            if (!targetDir.exists()) {
+                println("Module not installed")
+                return
+            }
+
+            runCommand(listOf("git", "-C", targetDir.path, "pull"))
+        }
+
+        else -> println("Unknown command")
+    }
 }
