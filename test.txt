@@ -1,1 +1,50 @@
 este es un test
+
+
+
+2️⃣ Registrar el módulo en el core
+
+Editar modules.json:
+
+{
+  "auth": "https://github.com/TU_USUARIO/my-framework-auth.git",
+  "payments": "https://github.com/TU_USUARIO/my-framework-payments.git"
+}
+
+Commit y push del core.
+
+3️⃣ Compilar tu CLI si hiciste cambios
+
+Si modificaste la CLI:
+
+kotlinc cli/src/main/kotlin -include-runtime -d mi-cli.jar
+
+Copias el nuevo mi-cli.jar al repo del core.
+
+Commit:
+
+git add mi-cli.jar
+git commit -m "Update CLI"
+git push
+
+Listo.
+El módulo ya es instalable por cualquier usuario.
+
+
+🚀 FLUJO 2 — Usuario final
+
+Este es el flujo limpio para usuarios.
+
+1️⃣ Clonar el core
+git clone https://github.com/TU_USUARIO/my-framework-core.git
+cd my-framework-core
+2️⃣ Instalar módulo
+java -jar mi-cli.jar install auth
+
+Resultado:
+
+modules/auth/
+3️⃣ Instalar múltiples módulos
+java -jar mi-cli.jar install auth payments
+4️⃣ Actualizar módulo
+java -jar mi-cli.jar update auth
